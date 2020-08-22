@@ -8,14 +8,14 @@ const routes = {
 
 	//Users
 	users: "/users",
-	userDetail: "/:id",
+	userDetail: (id) => (id ? "/users/" + id : "/:id"),
 	editProfile: "/edit-profile",
 	changePassword: "/change-password",
 
 	//Videos
 	videos: "/videos",
 	upload: "/upload",
-	videoDetail: "/:id",
+	videoDetail: (id) => (id ? "/videos/" + id : "/:id"),
 	editVideo: "/:id/edit",
 	deleteVideo: "/:id/delete",
 };
