@@ -1,4 +1,22 @@
-export const videos = [
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+
+mongoose.connect(process.env.MONGO_URL, {
+	useNewUrlParser: true,
+	useFindAndModify: false,
+	useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+
+const handleOpen = () => console.log("Successfully connected to DB");
+const handleError = () => console.log(`Error on DB Connection: ${error}`);
+
+db.once("open", handleOpen);
+db.on("error", handleError);
+
+/* export const videos = [
 	{
 		id: 24,
 		title: "video1",
@@ -28,3 +46,4 @@ export const videos = [
 		videoFile: "https://ch.dawin.tv/dmpro/360/159/v1597111882_2147483647.mp4",
 	},
 ];
+ */
