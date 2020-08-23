@@ -1,8 +1,28 @@
 import routes from "../routes";
+import Video from "../models/Video";
+import { uploadVideo } from "../app";
 
-export const home = (req, res) => res.render("home", { pageTitle: "Home" });
+export const home = async (req, res) => {
+	const loadVideos = new Promise((resolve, reject) => {
+		const videos = Video.find({});
+		if (videos) resolve(videos);
+		else reject([]);
+	});
+	loadVideos.then((videos) => {
+		res.render("home", { pageTitle: "Home", videos });
+	});
+
+	// try {
+	// 	const videos = await Video.find({});
+	// 	console.log(videos);
+	// 	res.render("home", { pageTitle: "Home", videos });
+	// } catch (error) {
+	// 	console.log(error);
+	// 	res.render("home", { pageTitle: "Home", videos: [] });
+	// }
+};
+
 export const search = (req, res) => {
-	// const searchingBy = (req.query.term);
 	const {
 		query: { term: searchingFor },
 	} = req;
@@ -11,12 +31,18 @@ export const search = (req, res) => {
 export const getUpload = (req, res) =>
 	res.render("upload", { pageTitle: "Upload" });
 
-export const postUpload = (req, res) => {
-	const { file, title, description } = req.body;
+export const postUpload = async (req, res) => {
+	const {
+		body: { title, description },
+		file: { path },
+	} = req;
+	const newVideo = await Video.create({ fileUrl: path, title, description });
+	console.log(newVideo);
+	// console.log(file, title, description);
 
 	// To DO: Upload and save video
 
-	res.redirect(routes.videoDetail(24));
+	res.redirect(routes.videoDetail(newVideo.id));
 
 	// res.render("upload", { pageTitle: "Upload" });
 };
