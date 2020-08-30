@@ -16,8 +16,8 @@ const routes = {
 	videos: "/videos",
 	upload: "/upload",
 	videoDetail: (id) => (id ? "/videos/" + id : "/:id"),
-	editVideo: "/:id/edit",
-	deleteVideo: "/:id/delete",
+	editVideo: (id) => (id ? `/videos/${id}/edit` : "/:id/edit"),
+	deleteVideo: (id) => (id ? `/videos/${id}/delete` : "/:id/delete"),
 };
 
 export default routes;
