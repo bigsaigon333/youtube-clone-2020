@@ -2,13 +2,14 @@ import routes from "../routes";
 import Video from "../models/Video";
 import { uploadVideo } from "../app";
 
-export const home = async (req, res) => {
-	const loadVideos = new Promise((resolve, reject) => {
-		const videos = Video.find({});
-		if (videos) resolve(videos);
-		else reject([]);
-	});
-	loadVideos.then((videos) => {
+export const home = (req, res) => {
+	const loadVideos = () =>
+		new Promise((resolve, reject) => {
+			const videos = Video.find({});
+			if (videos) resolve(videos);
+			else reject([]);
+		});
+	loadVideos().then((videos) => {
 		res.render("home", { pageTitle: "Home", videos });
 	});
 
