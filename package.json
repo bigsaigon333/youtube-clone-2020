@@ -4,7 +4,9 @@
 	"description": "cloning youtube with node.js and vanilla js",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon init.js --exec babel-node"
+		"dev:server": "nodemon init.js --exec babel-node --delay 2",
+		"dev:assets": "WEBPACK_ENV=development webpack",
+		"build:assets": "WEBPACK_ENV=production webpack"
 	},
 	"repository": {
 		"type": "git",
@@ -29,10 +31,16 @@
 		"mongoose": "^5.10.0",
 		"morgan": "^1.10.0",
 		"multer": "^1.4.2",
-		"pug": "^3.0.0"
+		"postcss-loader": "^3.0.0",
+		"pug": "^3.0.0",
+		"sass-loader": "^10.0.1"
 	},
 	"devDependencies": {
+		"css-loader": "^4.2.2",
 		"eslint": "^7.7.0",
-		"nodemon": "^2.0.4"
+		"mini-css-extract-plugin": "^0.11.0",
+		"nodemon": "^2.0.4",
+		"webpack": "^4.44.1",
+		"webpack-cli": "^3.3.12"
 	}
 }
