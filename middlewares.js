@@ -4,9 +4,9 @@ import routes from "./routes";
 export const deliverRoutes = (req, res, next) => {
 	res.locals.siteName = "YouTube-clone";
 	res.locals.routes = routes;
-	// res.locals.videos = videos;
+
 	res.locals.user = {
-		isAuthenticated: true,
+		isAuthenticated: false,
 		id: 1,
 	};
 	next();
