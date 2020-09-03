@@ -1,9 +1,10 @@
 import routes from "../routes";
 import User from "../models/User";
+import passport from "passport";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 
-export const postJoin = async (req, res) => {
+export const postJoin = async (req, res, next) => {
 	console.log(req.body);
 	const { name, email, password, password2 } = req.body;
 
@@ -12,14 +13,14 @@ export const postJoin = async (req, res) => {
 		res.render("join", { pageTitle: "Join" });
 	} else {
 		try {
-			// To Do: Register User
+			// Register User
 			const user = await User({ name, email });
 			await User.register(user, password);
 
-			// To Do: Log user in
+			// Log user in
+			next();
 		} catch (e) {
 			console.error(e);
-		} finally {
 			res.redirect(routes.home);
 		}
 	}
@@ -27,15 +28,84 @@ export const postJoin = async (req, res) => {
 
 export const getLogin = (req, res) =>
 	res.render("login", { pageTitle: "Login" });
-export const postLogin = (req, res) => {
-	// res.render("login", { pageTitle: "Login" });
 
+export const postLogin = passport.authenticate("local", {
+	failureRedirect: routes.login,
+	successRedirect: routes.home,
+});
+
+// export const githubLogin = passport.authenticate("github");
+
+export const githubLoginCallback = async (
+	accessToken,
+	refreshToken,
+	profile,
+	cb
+) => {
+	/*  when cancelled during github login
+	accessToken: null
+	refreshToken: false
+	profile: { message: 'The user has denied your application access.' }
+	cb: undefined
+	 */
+	/*  when proceeded
+	accessToken: dad7ba4c1ae82c468e0b6667f9e3baaea605d9bd
+	refreshToken: undefined
+	profile: [object Object]
+	cb: function verified(err, user, info) {
+								if (err) { return self.error(err); }
+								if (!user) { return self.fail(info); }
+	
+								info = info || {};
+								if (state) { info.state = state; }
+								self.success(user, info);
+							}
+ */
+
+	try {
+		console.log("cb: ");
+		console.log(cb);
+
+		const {
+			_json: { id, avatar_url, name, email },
+		} = profile;
+
+		console.log(id, avatar_url, name, email);
+
+		const user = await User.findOne({ email: email });
+		if (user) {
+			console.log("user is found");
+			user.githubId = id;
+			user.save();
+			return cb(null, user);
+		} else {
+			const newUser = await User.create({
+				email,
+				name,
+				githubId: id,
+				avatarUrl: avatar_url,
+			});
+			return cb(null, newUser);
+		}
+		// console.log("accessToken: " + accessToken);
+		// console.log("refreshToken: " + refreshToken);
+		// console.log("profile: " + profile);
+		// console.log("cb: " + cb);
+		// console.log(user);
+	} catch (e) {
+		console.error(e);
+		return cb(e);
+		// res.redirect(routes.login);
+	}
+};
+
+export const postGithubLogin = (req, res) => {
 	res.redirect(routes.home);
 };
 
 export const logout = (req, res) => {
-	// To Do: Process Log Out
-	// res.render("logout", { pageTitle: "Logout" }
+	// Process Log Out
+	req.logout();
 	res.redirect(routes.home);
 };
 

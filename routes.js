@@ -11,6 +11,8 @@ const routes = {
 	userDetail: (id) => (id ? "/users/" + id : "/:id"),
 	editProfile: "/edit-profile",
 	changePassword: "/change-password",
+	github: "/auth/github",
+	githubCallback: "/auth/github/callback",
 
 	//Videos
 	videos: "/videos",
