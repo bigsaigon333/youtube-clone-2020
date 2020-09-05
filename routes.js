@@ -13,6 +13,7 @@ const routes = {
 	changePassword: "/change-password",
 	github: "/auth/github",
 	githubCallback: "/auth/github/callback",
+	me: "/me",
 
 	//Videos
 	videos: "/videos",

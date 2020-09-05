@@ -5,8 +5,8 @@ export const deliverRoutes = (req, res, next) => {
 	res.locals.siteName = "YouTube-clone";
 	res.locals.routes = routes;
 
-	res.locals.user = req.user || null;
-	console.log("user: ", req.user);
+	res.locals.loggedUser = req.user || null;
+	// console.log("user: ", req.user);
 	next();
 };
 

@@ -42,33 +42,18 @@ export const githubLoginCallback = async (
 	profile,
 	cb
 ) => {
-	/*  when cancelled during github login
-	accessToken: null
-	refreshToken: false
-	profile: { message: 'The user has denied your application access.' }
-	cb: undefined
-	 */
-	/*  when proceeded
-	accessToken: dad7ba4c1ae82c468e0b6667f9e3baaea605d9bd
-	refreshToken: undefined
-	profile: [object Object]
-	cb: function verified(err, user, info) {
-								if (err) { return self.error(err); }
-								if (!user) { return self.fail(info); }
-	
-								info = info || {};
-								if (state) { info.state = state; }
-								self.success(user, info);
-							}
- */
-
 	try {
 		console.log("cb: ");
 		console.log(cb);
 
 		const {
-			_json: { id, avatar_url, name, email },
+			_json: { id, avatar_url, name },
 		} = profile;
+
+		const { value: email } = profile.emails.filter((item) => item.primary)[0];
+		console.log(profile.emails.filter((item) => item.primary)[0]);
+
+		console.log(profile);
 
 		console.log(id, avatar_url, name, email);
 
@@ -80,7 +65,7 @@ export const githubLoginCallback = async (
 			return cb(null, user);
 		} else {
 			const newUser = await User.create({
-				email,
+				email: email,
 				name,
 				githubId: id,
 				avatarUrl: avatar_url,
@@ -109,9 +94,30 @@ export const logout = (req, res) => {
 	res.redirect(routes.home);
 };
 
-export const userDetail = (req, res) =>
-	res.render("userDetail", { pageTitle: "User Detail" });
-export const editProfile = (req, res) =>
+export const getEditProfile = (req, res) =>
 	res.render("editProfile", { pageTitle: "Edit Profile" });
+
+export const getMe = (req, res) => {
+	// console.log("getMe");
+	// console.log(res.locals.loggedUser);
+	res.render("userDetail", {
+		pageTitle: "User Detail",
+		user: res.locals.loggedUser,
+	});
+};
+
 export const changePassword = (req, res) =>
 	res.render("changePassword", { pageTitle: "Change Password" });
+
+export const userDetail = async (req, res) => {
+	const {
+		params: { id },
+	} = req;
+	try {
+		const user = await User.findById(id);
+		res.render("userDetail", { pageTitle: "User Detail", user });
+	} catch (e) {
+		console.error(e);
+		res.redirect(routes.home);
+	}
+};
