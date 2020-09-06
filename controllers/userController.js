@@ -97,25 +97,84 @@ export const logout = (req, res) => {
 export const getEditProfile = (req, res) =>
 	res.render("editProfile", { pageTitle: "Edit Profile" });
 
-export const getMe = (req, res) => {
-	// console.log("getMe");
-	// console.log(res.locals.loggedUser);
-	res.render("userDetail", {
-		pageTitle: "User Detail",
-		user: res.locals.loggedUser,
-	});
+export const postEditProfile = async (req, res) => {
+	const {
+		body: { name, email },
+		file,
+	} = req;
+
+	console.log(file);
+	try {
+		await User.findByIdAndUpdate(req.user.id, {
+			name,
+			email,
+			avatarUrl: file ? file.path : req.user.avatarUrl,
+		});
+
+		res.redirect(routes.me);
+	} catch (e) {
+		console.error(e);
+		// res.render("editProfile", { pageTitle: "Edit Profile" });
+		res.redirect(routes.editProfile);
+	}
 };
 
-export const changePassword = (req, res) =>
+export const getMe = async (req, res) => {
+	// console.log("getMe");
+	// console.log(res.locals.loggedUser);
+	try {
+		const user = await User.findById(res.locals.loggedUser.id).populate(
+			"videos"
+		);
+
+		res.render("userDetail", {
+			pageTitle: "User Detail",
+			user: user,
+		});
+	} catch (e) {
+		console.error(e);
+		res.redirect(routes.home);
+	}
+};
+
+export const getChangePassword = (req, res) =>
 	res.render("changePassword", { pageTitle: "Change Password" });
+
+export const postChangePassword = async (req, res) => {
+	// res.render("changePassword", { pageTitle: "Change Password" });
+
+	const {
+		body: { oldPassword, newPassword, newPassword1 },
+	} = req;
+
+	console.log("postChangePassword", oldPassword, newPassword, newPassword1);
+
+	try {
+		if (newPassword !== newPassword1) {
+			throw new Error("New Password and New Password 1 must be the same");
+		}
+
+		await req.user.changePassword(oldPassword, newPassword);
+
+		res.redirect(routes.me);
+	} catch (e) {
+		console.error(e);
+		res.status(400);
+		res.redirect(`/users${routes.changePassword}`);
+	}
+};
 
 export const userDetail = async (req, res) => {
 	const {
 		params: { id },
 	} = req;
 	try {
-		const user = await User.findById(id);
-		res.render("userDetail", { pageTitle: "User Detail", user });
+		const user = await User.findById(id).populate("videos");
+		console.log(user.videos);
+		res.render("userDetail", {
+			pageTitle: "User Detail",
+			user,
+		});
 	} catch (e) {
 		console.error(e);
 		res.redirect(routes.home);

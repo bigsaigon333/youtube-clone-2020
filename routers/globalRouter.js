@@ -35,6 +35,6 @@ globalRouter.get(
 	postGithubLogin
 );
 
-globalRouter.get(routes.me, onlyPrivate, getMe);
+globalRouter.get(routes.me, getMe);
 
 export default globalRouter;

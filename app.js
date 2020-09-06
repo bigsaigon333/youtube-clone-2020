@@ -14,7 +14,7 @@ import passport from "passport";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 
-import { deliverRoutes, onlyPrivate } from "./middlewares";
+import { deliverRoutes } from "./middlewares";
 import routes from "./routes";
 import "./passport.js";
 
@@ -48,7 +48,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(deliverRoutes);
 
 app.use(routes.home, globalRouter);
-app.use(routes.users, onlyPrivate, userRouter);
+app.use(routes.users, userRouter);
 app.use(routes.videos, videoRouter);
 
 export default app;

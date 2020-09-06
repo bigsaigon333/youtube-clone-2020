@@ -42,13 +42,24 @@ export const postUpload = async (req, res) => {
 		body: { title, description },
 		file: { path },
 	} = req;
-	const newVideo = await Video.create({ fileUrl: path, title, description });
-	console.log(newVideo);
-	// console.log(file, title, description);
+	try {
+		const newVideo = await Video.create({
+			fileUrl: path,
+			title,
+			description,
+			creator: req.user.id,
+		});
+		req.user.videos.push(newVideo.id);
+		req.user.save();
+		console.log(newVideo);
+		// console.log(file, title, description);
 
-	// To DO: Upload and save video
+		// To DO: Upload and save video
 
-	res.redirect(routes.videoDetail(newVideo.id));
+		res.redirect(routes.videoDetail(newVideo.id));
+	} catch (e) {
+		console.error(e);
+	}
 
 	// res.render("upload", { pageTitle: "Upload" });
 };
@@ -59,7 +70,7 @@ export const videoDetail = async (req, res) => {
 	} = req;
 	// console.log(videoId);
 	try {
-		const video = await Video.findById(videoId);
+		const video = await Video.findById(videoId).populate("creator");
 		console.log(video);
 		res.render("videoDetail", { pageTitle: `Video ${video.title}`, video });
 	} catch (e) {
@@ -74,8 +85,16 @@ export const getEditVideo = async (req, res) => {
 
 	try {
 		const video = await Video.findById(videoId);
+
+		if (String(video.creator) !== req.user.id)
+			throw new Error(
+				`you're not a creator: (creator, you) = (${video.creator}, ${
+					req.user.id
+				} ${typeof video.creator} ${typeof req.user.id})`
+			);
 		res.render("editVideo", { pageTitle: `Edit ${video.title}`, video });
 	} catch (e) {
+		console.error(e);
 		res.redirect(routes.home);
 	}
 };
@@ -100,7 +119,16 @@ export const deleteVideo = async (req, res) => {
 	} = req;
 
 	try {
-		await Video.findOneAndRemove({ _id: videoId });
+		const video = await Video.findById(videoId);
+		if (String(video.creator) !== req.user.id)
+			throw new Error(
+				`you're not a creator: (creator, you) = (${video.creator}, ${
+					req.user.id
+				} ${typeof video.creator} ${typeof req.user.id})`
+			);
+		// await Video.findOneAndRemove({ _id: videoId });
+
+		video.remove();
 	} catch (e) {
 		console.error(e);
 	} finally {
