@@ -99,33 +99,118 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_polyfill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_polyfill__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _scss_styles_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../scss/styles.scss */ "./assets/scss/styles.scss");
 /* harmony import */ var _scss_styles_scss__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_scss_styles_scss__WEBPACK_IMPORTED_MODULE_1__);
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
+/* harmony import */ var _videoPlayer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./videoPlayer.js */ "./assets/js/videoPlayer.js");
+/* harmony import */ var _videoPlayer_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_videoPlayer_js__WEBPACK_IMPORTED_MODULE_2__);
 
 
 
-var something = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            console.log("Hello world");
 
-          case 1:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee);
-  }));
+/***/ }),
 
-  return function something() {
-    return _ref.apply(this, arguments);
-  };
-}();
+/***/ "./assets/js/videoPlayer.js":
+/*!**********************************!*\
+  !*** ./assets/js/videoPlayer.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var videoContainer = document.querySelector("#jsVideoPlayer");
+var video = document.querySelector("#jsVideoPlayer video");
+var playBtn = document.querySelector("#jsPlayButton");
+var volumeBtn = document.querySelector("#jsVolumeButton");
+var fullScreenBtn = document.querySelector("#jsFullScreenButton");
+var currentTime = document.querySelector("#currentTime");
+var totalTime = document.querySelector("#totalTime");
+var volumeRange = document.querySelector("#jsVolume");
+
+function setCurrentTime() {
+  // console.log(video.currentTime);
+  currentTime.innerHTML = formatDate(video.currentTime);
+}
+
+function setTotalTime() {
+  totalTime.innerHTML = formatDate(video.duration);
+}
+
+var formatDate = function formatDate(seconds) {
+  var secondNumber = parseInt(seconds, 10);
+  var hrs = Math.floor(secondNumber / 3600);
+  var min = Math.floor(secondNumber % 3600 / 60);
+  var sec = secondNumber % 60;
+  return ("0" + hrs).slice(-2) + ":" + ("0" + min).slice(-2) + ":" + ("0" + sec).slice(-2);
+};
+
+function toggleFullScreenClick() {
+  if (!document.fullscreenElement) {
+    videoContainer.requestFullscreen().then(function () {
+      fullScreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+      video.classList.toggle("videoPlayer--fullscreen");
+    }).catch(function (error) {
+      return console.error("You can't get a full screen: ".concat(error));
+    });
+  } else {
+    document.exitFullscreen().then(function () {
+      fullScreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+      video.classList.toggle("videoPlayer--fullscreen");
+    });
+  }
+}
+
+function handleVolumeClick() {
+  if (video.muted) {
+    video.muted = false;
+    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    volumeRange.value = video.volume;
+  } else {
+    video.muted = true;
+    volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    volumeRange.value = 0;
+  }
+}
+
+function handlePlayClick() {
+  if (video.paused) {
+    video.play();
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+  } else {
+    video.pause();
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+  }
+}
+
+function handleEnded() {
+  console.log("Video Ended");
+  video.currentTime = 0;
+  playBtn.innerHTML = '<i class="fas fa-play"></i>';
+}
+
+function handleVolumeControl(event) {
+  console.log(event);
+  video.volume = event.target.value;
+
+  if (video.volume > 0.7) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+  } else if (video.volume > 0.4) {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+  } else {
+    volumeBtn.innerHTML = '<i class="fas fa-volume-off"></i>';
+  }
+}
+
+function init() {
+  video.volume = volumeRange.value;
+  playBtn.addEventListener("click", handlePlayClick);
+  volumeBtn.addEventListener("click", handleVolumeClick);
+  fullScreenBtn.addEventListener("click", toggleFullScreenClick);
+  video.addEventListener("loadedmetadata", setTotalTime);
+  video.addEventListener("timeupdate", setCurrentTime);
+  video.addEventListener("ended", handleEnded);
+  volumeRange.addEventListener("input", handleVolumeControl);
+}
+
+if (videoContainer) {
+  init();
+}
 
 /***/ }),
 
