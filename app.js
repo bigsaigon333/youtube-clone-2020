@@ -6,14 +6,16 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import globalRouter from "./routers/globalRouter";
-import userRouter from "./routers/userRouter";
-import videoRouter from "./routers/videoRouter";
+
 import session from "express-session";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 
+import globalRouter from "./routers/globalRouter";
+import userRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
+import apiRouter from "./routers/apiRouter";
 import { deliverRoutes } from "./middlewares";
 import routes from "./routes";
 import "./passport.js";
@@ -50,5 +52,6 @@ app.use(deliverRoutes);
 app.use(routes.home, globalRouter);
 app.use(routes.users, userRouter);
 app.use(routes.videos, videoRouter);
+app.use(routes.api, apiRouter);
 
 export default app;

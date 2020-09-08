@@ -21,6 +21,11 @@ const routes = {
 	videoDetail: (id) => (id ? "/videos/" + id : "/:id"),
 	editVideo: (id) => (id ? `/videos/${id}/edit` : "/:id/edit"),
 	deleteVideo: (id) => (id ? `/videos/${id}/delete` : "/:id/delete"),
+
+	//API
+	api: "/api",
+	registerView: "/:id/view",
+	addComment: "/:id/comment",
 };
 
 export default routes;

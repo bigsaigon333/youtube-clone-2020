@@ -7,6 +7,15 @@ const currentTime = document.querySelector("#currentTime");
 const totalTime = document.querySelector("#totalTime");
 const volumeRange = document.querySelector("#jsVolume");
 
+function registerView() {
+	try {
+		const videoId = document.URL.split("videos/")[1];
+		fetch(`/api/${videoId}/view`, { method: "POST" });
+	} catch (e) {
+		console.error(e);
+	}
+}
+
 function setCurrentTime() {
 	// console.log(video.currentTime);
 
@@ -14,6 +23,7 @@ function setCurrentTime() {
 }
 
 function setTotalTime() {
+	console.log(video.duration);
 	totalTime.innerHTML = formatDate(video.duration);
 }
 
@@ -97,8 +107,13 @@ function init() {
 	volumeBtn.addEventListener("click", handleVolumeClick);
 	fullScreenBtn.addEventListener("click", toggleFullScreenClick);
 	video.addEventListener("loadedmetadata", setTotalTime);
+	video.addEventListener("loaded", setTotalTime);
+
 	video.addEventListener("timeupdate", setCurrentTime);
+
 	video.addEventListener("ended", handleEnded);
+	video.addEventListener("ended", registerView);
+
 	volumeRange.addEventListener("input", handleVolumeControl);
 }
 
