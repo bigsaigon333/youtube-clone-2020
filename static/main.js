@@ -101,6 +101,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scss_styles_scss__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_scss_styles_scss__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _videoPlayer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./videoPlayer.js */ "./assets/js/videoPlayer.js");
 /* harmony import */ var _videoPlayer_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_videoPlayer_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _videoRecorder_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./videoRecorder.js */ "./assets/js/videoRecorder.js");
+/* harmony import */ var _videoRecorder_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_videoRecorder_js__WEBPACK_IMPORTED_MODULE_3__);
+
 
 
 
@@ -209,6 +212,111 @@ function init() {
 }
 
 if (videoContainer) {
+  init();
+}
+
+/***/ }),
+
+/***/ "./assets/js/videoRecorder.js":
+/*!************************************!*\
+  !*** ./assets/js/videoRecorder.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var recordContainer = document.querySelector("#jsRecordContainer");
+var recordButton = document.querySelector("#jsRecordBtn");
+var videoPreview = document.querySelector("#jsVideoPreview");
+var videoRecorder;
+
+function handleVideoData(event) {
+  // console.log(event.data);
+  var videoFile = event.data;
+  var link = document.createElement("a");
+  link.href = URL.createObjectURL(videoFile);
+  link.download = "recorded.webm";
+  document.body.appendChild(link);
+  link.click();
+}
+
+function startRecording(stream) {
+  videoRecorder = new MediaRecorder(stream); // console.log(videoRecorder);
+
+  videoRecorder.addEventListener("dataavailable", handleVideoData);
+  videoRecorder.start();
+  videoPreview.muted = true;
+  recordButton.innerHTML = "Stop Recording";
+  recordButton.classList.toggle("video__button--recording");
+  recordButton.addEventListener("click", stopRecording);
+}
+
+function stopRecording() {
+  videoRecorder.stop();
+  recordButton.innerHTML = "Start Recording";
+  recordButton.classList.toggle("video__button--recording");
+  recordButton.removeEventListener("click", stopRecording);
+  recordButton.addEventListener("click", startRecording);
+}
+
+function getVideoStream() {
+  return _getVideoStream.apply(this, arguments);
+}
+
+function _getVideoStream() {
+  _getVideoStream = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var stream;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: {
+                width: 1280,
+                height: 720
+              }
+            });
+
+          case 3:
+            stream = _context.sent;
+            videoPreview.srcObject = stream;
+            videoPreview.play();
+            startRecording(stream);
+            _context.next = 13;
+            break;
+
+          case 9:
+            _context.prev = 9;
+            _context.t0 = _context["catch"](0);
+            console.error("You denied recording", _context.t0.name, _context.t0.message);
+            recordButton.innerHTML = "can't access to record function";
+
+          case 13:
+            _context.prev = 13;
+            recordButton.removeEventListener("click", getVideoStream);
+            return _context.finish(13);
+
+          case 16:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[0, 9, 13, 16]]);
+  }));
+  return _getVideoStream.apply(this, arguments);
+}
+
+function init() {
+  recordButton.addEventListener("click", getVideoStream);
+}
+
+if (recordContainer) {
   init();
 }
 
