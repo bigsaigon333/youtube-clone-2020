@@ -227,6 +227,10 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports) {
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 var videoContainer = document.querySelector("#jsVideoPlayer");
 var video = document.querySelector("#jsVideoPlayer video");
 var playBtn = document.querySelector("#jsPlayButton");
@@ -253,8 +257,37 @@ function setCurrentTime() {
 }
 
 function setTotalTime() {
-  console.log(video.duration);
-  totalTime.innerHTML = formatDate(video.duration);
+  return _setTotalTime.apply(this, arguments);
+}
+
+function _setTotalTime() {
+  _setTotalTime = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            try {
+              // const blob = await fetch(video.src).then((response) => response.blob());
+              // const duration = await getBlobDuration(blob);
+              console.log(video.duration);
+
+              if (video.duration == Infinity) {
+                totalTime.innerHTML = "";
+              } else {
+                totalTime.innerHTML = formatDate(video.duration);
+              }
+            } catch (e) {
+              console.error(e);
+            }
+
+          case 1:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  }));
+  return _setTotalTime.apply(this, arguments);
 }
 
 var formatDate = function formatDate(seconds) {
@@ -328,7 +361,8 @@ function init() {
   volumeBtn.addEventListener("click", handleVolumeClick);
   fullScreenBtn.addEventListener("click", toggleFullScreenClick);
   video.addEventListener("loadedmetadata", setTotalTime);
-  video.addEventListener("loaded", setTotalTime);
+  video.addEventListener("loadeddata", setTotalTime);
+  if (video.readyState >= 1) setTotalTime();
   video.addEventListener("timeupdate", setCurrentTime);
   video.addEventListener("ended", handleEnded);
   video.addEventListener("ended", registerView);

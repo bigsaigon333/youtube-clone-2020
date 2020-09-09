@@ -5,8 +5,10 @@
 	"main": "index.js",
 	"scripts": {
 		"dev:server": "nodemon init.js --exec babel-node",
+		"build:server": "babel ",
 		"dev:assets": "WEBPACK_ENV=development webpack --watch",
-		"build:assets": "WEBPACK_ENV=production webpack"
+		"build:assets": "WEBPACK_ENV=production webpack",
+		"build": "npm run build:server && npm run build:assets"
 	},
 	"repository": {
 		"type": "git",
@@ -24,6 +26,7 @@
 		"@babel/node": "^7.10.5",
 		"@babel/polyfill": "^7.11.5",
 		"@babel/preset-env": "^7.11.0",
+		"aws-sdk": "^2.748.0",
 		"axios": "^0.20.0",
 		"body-parser": "^1.19.0",
 		"connect-mongo": "^3.2.0",
@@ -31,10 +34,12 @@
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"express-session": "^1.17.1",
+		"get-blob-duration": "^1.1.2",
 		"helmet": "^4.1.0",
 		"mongoose": "^5.10.0",
 		"morgan": "^1.10.0",
 		"multer": "^1.4.2",
+		"multer-s3": "^2.9.0",
 		"passport": "^0.4.1",
 		"passport-github": "^1.1.0",
 		"passport-local": "^1.0.0",

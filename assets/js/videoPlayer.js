@@ -22,9 +22,19 @@ function setCurrentTime() {
 	currentTime.innerHTML = formatDate(video.currentTime);
 }
 
-function setTotalTime() {
-	console.log(video.duration);
-	totalTime.innerHTML = formatDate(video.duration);
+async function setTotalTime() {
+	try {
+		// const blob = await fetch(video.src).then((response) => response.blob());
+		// const duration = await getBlobDuration(blob);
+		console.log(video.duration);
+		if (video.duration == Infinity) {
+			totalTime.innerHTML = "";
+		} else {
+			totalTime.innerHTML = formatDate(video.duration);
+		}
+	} catch (e) {
+		console.error(e);
+	}
 }
 
 const formatDate = (seconds) => {
@@ -107,7 +117,9 @@ function init() {
 	volumeBtn.addEventListener("click", handleVolumeClick);
 	fullScreenBtn.addEventListener("click", toggleFullScreenClick);
 	video.addEventListener("loadedmetadata", setTotalTime);
-	video.addEventListener("loaded", setTotalTime);
+	video.addEventListener("loadeddata", setTotalTime);
+
+	if (video.readyState >= 1) setTotalTime();
 
 	video.addEventListener("timeupdate", setCurrentTime);
 
