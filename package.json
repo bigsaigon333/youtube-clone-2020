@@ -11,7 +11,8 @@
 		"build": "npm run build:server && npm run build:assets && npm run copy ",
 		"copy": "cp -rf src/static build && cp -rf src/views build",
 		"prebuild": "rm -rf build",
-		"start": "node build/init.js"
+		"start": "node build/init.js",
+		"prestart": "npm run build"
 	},
 	"repository": {
 		"type": "git",
