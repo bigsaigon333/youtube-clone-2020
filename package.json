@@ -52,10 +52,10 @@
 		"pug": "^3.0.0",
 		"webpack": "^4.44.1",
 		"webpack-cli": "^3.3.12",
+		"autoprefixer": "^9.8.6",
 		"mini-css-extract-plugin": "^0.11.0"
 	},
 	"devDependencies": {
-		"autoprefixer": "^9.8.6",
 		"babel-loader": "^8.1.0",
 		"css-loader": "^4.2.2",
 		"eslint": "^7.7.0",
