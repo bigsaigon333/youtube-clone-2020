@@ -13,7 +13,7 @@ passport.use(
 		{
 			clientID: process.env.GITHUB_CLIENT_ID,
 			clientSecret: process.env.GITHUB_CLIENT_SECRET,
-			callbackURL: `http://localhost:4000${routes.githubCallback}`,
+			callbackURL: `https://powerful-ravine-68132.herokuapp.com${routes.githubCallback}`,
 			scope: "user:email",
 		},
 		githubLoginCallback
