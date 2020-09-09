@@ -11,7 +11,7 @@
 		"build": "npm run build:server && npm run build:assets && npm run copy ",
 		"copy": "cp -rf src/static build && cp -rf src/views build",
 		"prebuild": "rm -rf build",
-		"start": "node build/init.js",
+		"start": "PRODUCTION=true node build/init.js",
 		"prestart": "npm run build"
 	},
 	"repository": {
@@ -53,16 +53,16 @@
 		"webpack": "^4.44.1",
 		"webpack-cli": "^3.3.12",
 		"autoprefixer": "^9.8.6",
+		"babel-loader": "^8.1.0",
+		"css-loader": "^4.2.2",
+		"node-sass": "^4.14.1",
+		"postcss-loader": "^3.0.0",
+		"sass-loader": "^10.0.1",
 		"mini-css-extract-plugin": "^0.11.0"
 	},
 	"devDependencies": {
-		"babel-loader": "^8.1.0",
-		"css-loader": "^4.2.2",
-		"eslint": "^7.7.0",
-		"node-sass": "^4.14.1",
 		"nodemon": "^2.0.4",
-		"postcss-loader": "^3.0.0",
-		"sass-loader": "^10.0.1"
+		"eslint": "^7.7.0"
 	},
 	"nodemonConfig": {
 		"ignore": [
