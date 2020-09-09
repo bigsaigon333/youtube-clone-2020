@@ -10,6 +10,7 @@ export const postJoin = async (req, res, next) => {
 
 	if (password !== password2) {
 		res.status(400);
+		req.flash("error", "Passwords don't match");
 		res.render("join", { pageTitle: "Join" });
 	} else {
 		try {
@@ -32,6 +33,8 @@ export const getLogin = (req, res) =>
 export const postLogin = passport.authenticate("local", {
 	failureRedirect: routes.login,
 	successRedirect: routes.home,
+	successFlash: "Welcome",
+	failureFlash: "Can't log in. Check your email and/or password",
 });
 
 // export const githubLogin = passport.authenticate("github");
@@ -72,11 +75,6 @@ export const githubLoginCallback = async (
 			});
 			return cb(null, newUser);
 		}
-		// console.log("accessToken: " + accessToken);
-		// console.log("refreshToken: " + refreshToken);
-		// console.log("profile: " + profile);
-		// console.log("cb: " + cb);
-		// console.log(user);
 	} catch (e) {
 		console.error(e);
 		return cb(e);
@@ -90,6 +88,7 @@ export const postGithubLogin = (req, res) => {
 
 export const logout = (req, res) => {
 	// Process Log Out
+	req.flash("info", "See you soon!");
 	req.logout();
 	res.redirect(routes.home);
 };
@@ -110,9 +109,10 @@ export const postEditProfile = async (req, res) => {
 			email,
 			avatarUrl: file ? file.location : req.user.avatarUrl,
 		});
-
+		req.flash("success", "Profile updated");
 		res.redirect(routes.me);
 	} catch (e) {
+		req.flash("error", "Profile has not been updated");
 		console.error(e);
 		// res.render("editProfile", { pageTitle: "Edit Profile" });
 		res.redirect(routes.editProfile);
@@ -151,6 +151,7 @@ export const postChangePassword = async (req, res) => {
 
 	try {
 		if (newPassword !== newPassword1) {
+			req.flash("error", "Both passwords don't match");
 			throw new Error("New Password and New Password 1 must be the same");
 		}
 
@@ -179,4 +180,11 @@ export const userDetail = async (req, res) => {
 		console.error(e);
 		res.redirect(routes.home);
 	}
+};
+
+export const githubLogin = (req, res) => {
+	passport.authenticate("github", {
+		successFlash: "Welcome!",
+		failureFlash: "Check your email and/or password",
+	});
 };

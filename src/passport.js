@@ -6,6 +6,9 @@ import GithubStrategy from "passport-github";
 import User from "./models/User";
 import { githubLoginCallback } from "./controllers/userController";
 import routes from "./routes";
+import path from "path";
+
+console.log(path.resolve(__dirname));
 
 passport.use(User.createStrategy());
 passport.use(
@@ -13,7 +16,7 @@ passport.use(
 		{
 			clientID: process.env.GITHUB_CLIENT_ID,
 			clientSecret: process.env.GITHUB_CLIENT_SECRET,
-			callbackURL: `https://powerful-ravine-68132.herokuapp.com${routes.githubCallback}`,
+			callbackURL: `${path.resolve(__dirname)}${routes.githubCallback}`,
 			scope: "user:email",
 		},
 		githubLoginCallback

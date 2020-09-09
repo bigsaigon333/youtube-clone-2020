@@ -11,6 +11,7 @@ import session from "express-session";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
+import flash from "express-flash";
 
 import globalRouter from "./routers/globalRouter";
 import userRouter from "./routers/userRouter";
@@ -43,6 +44,7 @@ app.use(
 		// cookie: { secure: true },
 	})
 );
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
